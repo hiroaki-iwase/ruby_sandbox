@@ -23,7 +23,7 @@ end
 
 
 
-  #input = input.to_s if !input.kind_of?(String)
+#input = input.to_s if !input.kind_of?(String)
 
 
 =begin
