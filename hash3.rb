@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+@name = Array.new(12){ |i| Array.new }
 
 def self.hash(input)
   input = input.to_s if input.class != String
@@ -12,49 +13,41 @@ def self.hash(input)
 end
 
 
-
-
-def self.set(family, last)
-  @name = Hash.new{ |hash,key| hash[key] = {} } if !defined?(@name)
-  if @name[hash(family)].include?(family)
+def self.set(family, first)
+  if @name[hash(family)].assoc family
     puts "this family name are already used"
     return
   end
-  @name[hash(family)][family] = last
+  @name[hash(family)].push(["#{family}", "#{first}"]) 
   puts "STORED(#{@name})"
 end
 
 def self.get(family)
-  if @name[hash(family)][family]  
-    puts "LAST_NAME is #{@name[hash(family)][family]}"
-  else
-    puts "NOT STORED"
-  end
+  @name[hash(family)].each {|value|
+    if value[0] == family
+      puts "FIRST_NAME is #{value[1]}"
+      return
+    end
+  }
+  puts "NOT STORED"
 end
 
 
-
-
-
-
-
-
-#while(true)
 for i in 1..100
   puts "\r\n[1]input\r\n[2]output\r\n[3]finish"
   case gets.chomp!
     when "1"
       print "input family name\r\n>"
-      f_name = gets.chomp!
-      print "input last name\r\n>"
-      l_name = gets.chomp!
-      set(f_name, l_name)
+      family_name = gets.chomp!
+      print "input first name\r\n>"
+      first_name = gets.chomp!
+      set(family_name, first_name)
       next
 
     when "2"
       print "input family name\r\n>"
-      f_name = gets.chomp!
-      get(f_name)
+      family_name = gets.chomp!
+      get(family_name)
       next
 
     when "3"
