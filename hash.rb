@@ -1,112 +1,77 @@
-#person = Array.new
-#person[0] = "tanaka"
-#person[1] = "satou"
-#person[2] = "kimura"
-#p person[1]
+# -*- encoding: utf-8 -*-
+#@name = Array.new(12){ |i| Array.new }
 
-#person = Hash.new
-#person['tanaka'] = "ichirou"
-#person['satou'] = "ziro"
-#person['kimura'] = "saburou"
-#p person['satou']
-
-#h1 = {"a" => "b", "c" => "d"}
-#p h1["a"]
-#p h1
-
-#h2 = {a: "b", c:"d"}
-#p h2
-
-#h1 = Hash.new
-#h2 = Hash.new("")
-#p h1["not_key"]
-#p h2["not_key"]
-
-#h = Hash.new
-#h["R"] = "Ruby"
-#p h["R"]
-
-#h = Hash.new
-#h.store("R", "Ruby")
-#p h.fetch("R", "(undef)")
-#p h.fetch("L", "(undef)")
-#p h.fetch("L"){String.new}
-
-#h = {"a"=>"b", "c"=>"d"}
-#p h.keys
-#p h.values
-#p h.to_a
-
-#h = Hash.new(1)
-#h["a"] = 10
-#p h["a"]
-#p h["b"]
-#p h["c"]
-
-=begin
-h = Hash.new{|hash, key|
-  hash[key] = key.upcase
-}
-
-h["a"] = "b"
-p h["a"]
-#p h["x"]
-p h["y"]
-p h.fetch("x", "(undef)")
-=end
-
-#h = {"a"=>"b", "c"=>"d"}
-=begin
-p h.key?("a")
-p h.has_key?("a")
-p h.include?("b")
-p h.member?("b")
-
-p h.value?("b")
-p h.has_value?("b")
-
-
-p h.length
-p h.size
-
-p h.empty?
-h2 = Hash.new
-p h2.empty?
-
-p h["a"]
-p h["b"]
-
-h.delete("a")
-p h.delete("b"){|key| "no #{key}."}
-
-p h["a"]
-p h["b"]
-
-h = {"R"=>"Ruby", "P"=>"Perl"}
-p h.delete_if{|key, value| key == "P"}
-h.clear
-p h.size
-
-table = {"A"=>{"a"=>"x", "b"=>"y"},
-         "B"=>{"a"=>"v", "b"=>"w"}}
-
-p table["A"]["a"]
-p table["B"]["a"]
-=end
-
-count = Hash.new(0)
-
-while line =gets
-  words = line.split
-#p words
-  words.each do |word|
-    count[word] += 1
-p count
+class Pair
+  attr_accessor :fst, :snd
+  def initialize(first, second)
+    @fst = first
+    @snd = second
   end
 end
 
-count.sort{|a, b|
-  a[1] <=> b[1]
-}.each do |key, value|
-  print "#{key}: #{value}\n"
+
+class Name
+  def initialize
+    @name = Array.new(12){ |i| Array.new }
+  end
+
+  def hash(input)
+    input = input.to_s if input.class != String
+    each_char = input.split('')
+    sum = 0
+    each_char.each {|c|
+      sum += c.ord
+    }
+    (sum % 12)
+  end
+
+  def set(family, first)
+    if @name[hash(family)].assoc family
+      puts "this family name are already used"
+      return
+    end
+
+    @name[hash(family)].push(Pair.new(family, first))
+    puts "STORED(#{@name})"
+  end
+
+  def get(family)
+    @name[hash(family)].each {|value|
+      if value.fst == family
+        puts "First name is #{value.snd}"
+        return
+      end
+    }
+    puts "NOT STORED"
+  end
+end #end of Name class
+
+name = Name.new
+
+
+for i in 1..100
+  puts "**************************************"
+  puts "\r\n[1]input\r\n[2]output\r\n[3]finish"
+  case gets.chomp!
+    when "1"
+      print "input family name\r\n>"
+      family_name = gets.chomp!
+      print "input first name\r\n>"
+      first_name = gets.chomp!
+      name.set(family_name, first_name)
+      next
+
+    when "2"
+      print "input family name\r\n>"
+      name.get(gets.chomp!)
+      next
+
+    when "3"
+      puts "finish"
+      break
+
+    else
+      puts "please input number 1 or 2 or 3"
+      next
+  end
 end
