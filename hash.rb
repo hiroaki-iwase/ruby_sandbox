@@ -9,7 +9,7 @@ class Pair
 end
 
 ###change name
-class Hash
+class MyHash
   def initialize
     @name = Array.new(12){ |i| Array.new }
   end
@@ -30,20 +30,20 @@ class Hash
       return false if value.fst == key
     }
     @name[hash(key)].push(Pair.new(key, value))
-    puts "#{@name}"
+    puts "#{@name}" #debug
     return true
   end
 
   def get(key)
     @name[hash(key)].each {|value|
+      p "value.snd.class = #{value.snd.class}"
       return value.snd if value.fst == key
     }
     return false
   end
 end #end of Hash class
  
-name = Hash.new
-
+name = MyHash.new
 
 for i in 1..100
   puts "**************************************"
@@ -54,7 +54,14 @@ for i in 1..100
       print "input family name\r\n>"
       family_name = gets.chomp!
       print "input first name\r\n>"
-      first_name = gets.chomp!
+      begin
+        first_name = gets.chomp!
+        #first_name = false
+        raise TypeError, "Type error." if first_name.is_a? FalseClass
+      rescue
+        p "You can not use [false] as a first name."
+        next
+      end
       if name.set(family_name, first_name)
         puts "STORED"
       elsif
