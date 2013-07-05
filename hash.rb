@@ -36,10 +36,9 @@ class MyHash
 
   def get(key)
     @name[hash(key)].each {|value|
-      p "value.snd.class = #{value.snd.class}"
       return value.snd if value.fst == key
     }
-    return false
+    raise
   end
 end #end of Hash class
  
@@ -54,14 +53,7 @@ for i in 1..100
       print "input family name\r\n>"
       family_name = gets.chomp!
       print "input first name\r\n>"
-      begin
         first_name = gets.chomp!
-        #first_name = false
-        raise TypeError, "Type error." if first_name.is_a? FalseClass
-      rescue
-        p "You can not use [false] as a first name."
-        next
-      end
       if name.set(family_name, first_name)
         puts "STORED"
       elsif
@@ -71,12 +63,14 @@ for i in 1..100
 
     when "2" #GET
       print "input family name\r\n>"
-      if f_name = name.get(gets.chomp!)
+      begin
+        f_name = name.get(gets.chomp!)
         puts "First name is #{f_name}"
-      elsif
-        puts "NOT STORED\r\n"
+      rescue
+        puts "[ERROR] This family name is NOT set."
+      ensure
+        next
       end
-      next
 
     when "3" #FINISH
       puts "finish"
