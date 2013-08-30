@@ -1,17 +1,35 @@
 # -*- encoding: utf-8 -*-
-
-class Pair
-  attr_accessor :fst, :snd
-  def initialize(first, second)
-    @fst = first
-    @snd = second
+class List
+  class Cell
+    attr_accessor :fst, :snd, :link
+    def initialize(fst, snd, link = nil)
+      @fst = fst
+      @snd = snd
+      @link = link
+    end
   end
-end
 
-###change name
+  attr_accessor :top, :current_cell
+  def initialize()
+    @top = Cell.new("end of list", nil, nil)
+  end
+
+  def insert(key, value)
+    @top = Cell.new(key, value, @top)
+  end
+
+  def search(key)
+    access_cell = @top
+    while access_cell.fst != "end of list"
+      return access_cell.snd if access_cell.fst == key
+      access_cell = access_cell.link
+    end
+  end #end of Cell class
+end #end of List class
+
 class MyHash
   def initialize
-    @name = Array.new(12){ |i| Array.new }
+    @name = Array.new(12){ |i| List.new }
   end
 
   def hash(input)
@@ -24,21 +42,17 @@ class MyHash
     (sum % 12)
   end
 
-#key valueに変更
   def set(key, value)
-    @name[hash(key)].each {|value|
-      return false if value.fst == key
-    }
-    @name[hash(key)].push(Pair.new(key, value))
-    puts "#{@name}" #debug
-    return true
+    return false if @name[hash(key)].search(key)
+
+    @name[hash(key)].insert(key, value)
   end
 
   def get(key)
-    @name[hash(key)].each {|value|
-      return value.snd if value.fst == key
-    }
-    raise
+    case result = @name[hash(key)].search(key)
+      when nil; raise
+      else    ; return result
+    end
   end
 end #end of Hash class
  
